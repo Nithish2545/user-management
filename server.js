@@ -1,13 +1,16 @@
 import express from "express";
 import admin from "firebase-admin";
 import cors from "cors";
-import { createRequire } from "module";
 import Joi from "joi";
+import "dotenv/config";
 
-const require = createRequire(import.meta.url);
+const serviceAccount = JSON.parse(
+  Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64, "base64").toString(
+    "utf-8"
+  )
+);
 
 // 🔐 Load Firebase Admin key
-const serviceAccount = require("./serviceAccountKey.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
@@ -20,6 +23,13 @@ app.use(express.json());
 const ROLE = ["sales associate", "Manager", "admin", "OPS Head"];
 
 const CITY = ["CHENNAI"];
+
+// async function printBase64Key() {
+//   const json = await readFile("./serviceAccountKey.json", "utf-8");
+//   const base64 = Buffer.from(json).toString("base64");
+
+//   console.log(base64); // 👈 copy this
+// }
 
 function convertGMTtoISTFormatted(gmtString) {
   // Create date from GMT string
